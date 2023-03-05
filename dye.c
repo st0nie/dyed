@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  // 检查命令行参数
+  // Check command-line arguments
   if (argc <= 1) {
     printf("Usage: %s [command]\n", argv[0]);
     return -1;
@@ -14,18 +14,19 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  // Get environment file name and command
   char *env_file = argv[1];
   char *cmd = argv[2];
   char **args = &argv[2];
 
-  // 打开环境变量文件
+  // Open environment variable file
   FILE *fp = fopen(env_file, "r");
   if (fp == NULL) {
     perror("Error opening file");
     return -1;
   }
 
-  // 读取每一行并设置环境变量
+  // Read each line and set the environment variable
   char line[256];
   while (fgets(line, sizeof(line), fp)) {
     char *pos = strchr(line, '=');
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  // 执行命令
+  // Execute the command
   execvp(cmd, args);
 
   perror("Error executing command");
