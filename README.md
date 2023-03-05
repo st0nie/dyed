@@ -1,4 +1,5 @@
 # dyed
+DYnamic Environment variable Deamon
 ## Warning 
 Please note that dyed is written entirely by chatgpt (including this `readme.md`) and is used at your own risk!
 
