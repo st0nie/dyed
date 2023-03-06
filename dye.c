@@ -4,20 +4,24 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  // Check command-line arguments
-  if (argc <= 1) {
-    printf("Usage: %s [command]\n", argv[0]);
-    return -1;
+  char *env_file = "/tmp/dyed.env"; // 默认的环境文件路径
+
+  // 检查命令行选项是否包含 -e 标志
+  if (argc > 2 && strcmp(argv[1], "-e") == 0) {
+    env_file = argv[2];
+    argv += 2;  // 更新命令行参数列表，跳过 -e 标志和路径参数
+    argc -= 2;
   }
-  if (argv[1] == NULL || strcmp(argv[1], "") == 0) {
-    printf("Error: Missing environment variable filename.\n");
+
+  // 检查参数数量
+  if (argc <= 1) {
+    printf("Usage: %s [-e env_file] command [args]\n", argv[0]);
     return -1;
   }
 
-  // Get environment file name and command
-  char *env_file = argv[1];
-  char *cmd = argv[2];
-  char **args = &argv[2];
+  // Get command and args
+  char *cmd = argv[1];
+  char **args = &argv[1];
 
   // Open environment variable file
   FILE *fp = fopen(env_file, "r");
@@ -37,7 +41,8 @@ int main(int argc, char *argv[]) {
   }
 
   // Execute the command
-  execvp(cmd, args);
+  char *new_args[] = { "/bin/sh", "-c", cmd, NULL };
+  execvp(new_args[0], new_args);
 
   perror("Error executing command");
   return -1;
